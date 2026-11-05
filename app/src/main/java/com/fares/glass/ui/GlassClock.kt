@@ -46,16 +46,17 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
     val face = remember {
         runCatching { Typeface.createFromAsset(context.assets, "fonts/Clock-Bold.ttf") }.getOrDefault(Typeface.DEFAULT_BOLD)
     }
-    val stretch = 1.9f
+    val stretch = 1.85f
+    val narrow = 0.84f
     val glyphs = remember(time, density.density) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = face
-            textSize = with(density) { 108.sp.toPx() }
+            textSize = with(density) { 118.sp.toPx() }
             letterSpacing = -0.01f
         }
         val p = android.graphics.Path()
         paint.getTextPath(time, 0, time.length, 0f, 0f, p)
-        p.transform(Matrix().apply { postScale(1f, stretch) })
+        p.transform(Matrix().apply { postScale(narrow, stretch) })
         val b = RectF()
         @Suppress("DEPRECATION") p.computeBounds(b, true)
         p.offset(-b.left, -b.top)
@@ -73,32 +74,35 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
             .onGloballyPositioned { origin = it.positionInRoot() }
             .drawWithCache {
                 val rim = Brush.linearGradient(
-                    0f to Color.White.copy(alpha = 0.98f),
-                    0.3f to Color.White.copy(alpha = 0.40f),
-                    0.65f to Color.White.copy(alpha = 0.20f),
-                    1f to Color.White.copy(alpha = 0.75f),
+                    0f to Color.White,
+                    0.35f to Color.White.copy(alpha = 0.85f),
+                    0.7f to Color(0xFFE4F3EE).copy(alpha = 0.70f),
+                    1f to Color.White.copy(alpha = 0.95f),
                     start = Offset.Zero, end = Offset(size.width, size.height),
                 )
+                // Frosted, pale mint glass (as in the reference): mostly solid, a little of the
+                // background colour showing through, a glossy band near the top.
                 val body = Brush.verticalGradient(
-                    0f to Color.White.copy(alpha = 0.42f),
-                    0.5f to Color.White.copy(alpha = 0.20f),
-                    1f to Color.White.copy(alpha = 0.30f),
+                    0f to Color(0xFFF2FAF7).copy(alpha = 0.86f),
+                    0.45f to Color(0xFFD9EDE7).copy(alpha = 0.78f),
+                    1f to Color(0xFFB9D7CE).copy(alpha = 0.80f),
                 )
-                val specular = Brush.radialGradient(
-                    listOf(Color.White.copy(alpha = 0.38f), Color.Transparent),
-                    center = Offset(size.width * 0.28f, 0f), radius = size.width * 0.6f,
+                val specular = Brush.verticalGradient(
+                    0f to Color.White.copy(alpha = 0.55f),
+                    0.22f to Color.White.copy(alpha = 0.12f),
+                    0.4f to Color.Transparent,
                 )
                 val shadow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.argb(90, 0, 0, 0)
+                    color = android.graphics.Color.argb(110, 0, 0, 0)
                     maskFilter = BlurMaskFilter(16.dp.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
                 val drop = 7.dp.toPx()
-                val rimWidth = 1.6.dp.toPx()
+                val rimWidth = 2.6.dp.toPx()
                 val bevel = 2.4.dp.toPx()
                 val fringe = 0.9.dp.toPx()
                 val centre = Offset(size.width / 2, size.height / 2)
-                val bevelLight = Color.White.copy(alpha = 0.55f)
-                val bevelShade = Color(0xFF07130F).copy(alpha = 0.30f)
+                val bevelLight = Color.White.copy(alpha = 0.75f)
+                val bevelShade = Color(0xFF3F6A5E).copy(alpha = 0.35f)
                 onDrawBehind {
                     drawIntoCanvas { c ->
                         c.nativeCanvas.save()
@@ -122,7 +126,7 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
                                     img,
                                     dstOffset = IntOffset(-origin.x.roundToInt(), -origin.y.roundToInt()),
                                     dstSize = backdrop.screen,
-                                    alpha = 0.45f,
+                                    alpha = 0.30f,
                                     filterQuality = FilterQuality.Low,
                                 )
                             }

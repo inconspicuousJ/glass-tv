@@ -120,12 +120,7 @@ fun HomeScreen(
     fun move(dx: Int, dy: Int) {
         when (state.mode) {
             Mode.Browse -> {
-                if (dy < 0 && row == 0) {
-                    // Above the dock: the glass buttons at the top right.
-                    state.topIndex = top.lastIndex
-                    state.mode = Mode.Top
-                    return
-                }
+                if (dy < 0 && row == 0) return // nothing above the dock: settings live in the ☰ menu
                 HomeState.target(state.focus, dx, dy, apps.size)?.let { state.focus = it }
                 state.bump(dx, dy)
             }
@@ -267,8 +262,8 @@ fun HomeScreen(
         val dockAlpha by animateFloatAsState(if (row == 0) 1f else 0f, tween(300), label = "dock")
         val headerAlpha by animateFloatAsState(if (row == 0) 1f else 0f, tween(300), label = "header")
         if (headerAlpha > 0f) {
-            HomeHeader(repo.userName, backdrop, Modifier.fillMaxWidth().padding(top = 62.dp).graphicsLayer { alpha = headerAlpha })
-            if (state.mode != Mode.Control) {
+            HomeHeader(repo.userName, backdrop, Modifier.fillMaxWidth().padding(top = 48.dp).graphicsLayer { alpha = headerAlpha })
+            if (false && state.mode != Mode.Control) {
                 TopBar(
                     backdrop, top, if (state.mode == Mode.Top) state.topIndex else -1,
                     Modifier.align(Alignment.TopEnd).padding(top = 34.dp, end = Metrics.Margin).graphicsLayer { alpha = headerAlpha },
