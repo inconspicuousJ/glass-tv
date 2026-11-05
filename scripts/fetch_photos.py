@@ -2,7 +2,7 @@
 Each is centre-cropped to 1920x1080, very slightly darkened so the glass and clock stay readable,
 and listed in assets/photos/index.json. Failures are skipped, so a missing photo never breaks the build.
 Also writes photo-sheet.jpg (numbered thumbnails) for review."""
-import json, io, os, sys, urllib.request
+import json, io, os, re, sys, urllib.request
 from PIL import Image, ImageDraw, ImageEnhance
 
 root = os.path.dirname(os.path.abspath(__file__))
@@ -10,8 +10,17 @@ out_dir = os.path.join(root, '..', 'app', 'src', 'main', 'assets', 'photos')
 os.makedirs(out_dir, exist_ok=True)
 items, thumbs = [], []
 for i, p in enumerate(json.load(open(os.path.join(root, 'photos.json')))):
-    if 'slug' in p:  # an Unsplash page id (unsplash.com/photos/<id>): use its download link
-        url = f"https://unsplash.com/photos/{p['slug']}/download?force=true&w=2400"
+    if 'slug' in p:  # an Unsplash page id: read the page's preview-image tag for the direct image URL
+        try:
+            page = urllib.request.urlopen(urllib.request.Request(
+                f"https://unsplash.com/photos/{p['slug']}",
+                headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
+                         'Accept-Language': 'en'}), timeout=60).read().decode('utf-8', 'ignore')
+            m = re.search(r'<meta[^>]+property="og:image"[^>]+content="(https://images\.unsplash\.com/photo-[^"?]+)', page) \
+                or re.search(r'(https://images\.unsplash\.com/photo-[0-9a-z-]+)', page)
+            url = m.group(1) + "?w=2400&q=90&fm=jpg"
+        except Exception as e:
+            print('skip', p['name'], 'page:', e); continue
     else:
         url = f"https://images.unsplash.com/photo-{p['id']}?w=2400&q=90&fm=jpg"
     try:
