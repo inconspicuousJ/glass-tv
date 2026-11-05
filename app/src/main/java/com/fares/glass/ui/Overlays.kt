@@ -158,7 +158,7 @@ fun rememberClock(now: Long): Pair<String, String> {
 
 /** Home header: greeting, large time and date. */
 @Composable
-fun HomeHeader(name: String, modifier: Modifier) {
+fun HomeHeader(name: String, backdrop: Backdrop, modifier: Modifier) {
     val now = rememberNow()
     val hour = remember(now / 60000) { java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY) }
     val (plain, named) = when (hour) {
@@ -170,32 +170,9 @@ fun HomeHeader(name: String, modifier: Modifier) {
     val (time, date) = rememberClock(now)
     // Lock-screen style: a quiet date line over a tall, stretched rounded clock made of glass
     // (translucent frosted fill, bright rim). The wallpaper's front mountains are drawn over it.
-    val stretch = 1.65f
-    val clockStyle = TextStyle(
-        fontFamily = Typo.clock, fontWeight = FontWeight.Bold, fontSize = 108.sp, letterSpacing = (-1).sp,
-        lineHeight = 108.sp, lineHeightStyle = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.Both),
-    )
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(date, style = txt(white.copy(alpha = 0.92f), 19.sp, FontWeight.SemiBold).copy(shadow = headerShadow, letterSpacing = 0.2.sp))
-        Box(
-            Modifier.layout { measurable, constraints ->
-                val p = measurable.measure(constraints)
-                layout(p.width, (p.height * stretch).roundToInt()) {
-                    p.placeWithLayer(0, 0) { scaleY = stretch; transformOrigin = TransformOrigin(0.5f, 0f) }
-                }
-            },
-            contentAlignment = Alignment.Center,
-        ) {
-            BasicText(time, style = clockStyle.copy(
-                brush = Brush.verticalGradient(listOf(
-                    Color(0xFFF6FBF9).copy(alpha = 0.93f), Color(0xFFE0EEE9).copy(alpha = 0.80f), Color(0xFFC4DAD2).copy(alpha = 0.70f),
-                )),
-            ))
-            BasicText(time, style = clockStyle.copy(
-                brush = Brush.verticalGradient(listOf(Color.White, Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.55f))),
-                drawStyle = Stroke(width = 1.8f),
-            ))
-        }
+        GlassClock(time, backdrop, Modifier.padding(top = 10.dp))
     }
 }
 

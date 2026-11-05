@@ -267,7 +267,7 @@ fun HomeScreen(
         val dockAlpha by animateFloatAsState(if (row == 0) 1f else 0f, tween(300), label = "dock")
         val headerAlpha by animateFloatAsState(if (row == 0) 1f else 0f, tween(300), label = "header")
         if (headerAlpha > 0f) {
-            HomeHeader(repo.userName, Modifier.fillMaxWidth().padding(top = 62.dp).graphicsLayer { alpha = headerAlpha })
+            HomeHeader(repo.userName, backdrop, Modifier.fillMaxWidth().padding(top = 62.dp).graphicsLayer { alpha = headerAlpha })
             if (state.mode != Mode.Control) {
                 TopBar(
                     backdrop, top, if (state.mode == Mode.Top) state.topIndex else -1,
