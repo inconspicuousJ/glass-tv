@@ -240,6 +240,9 @@ fun HomeScreen(
                 Image(img, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop, filterQuality = FilterQuality.Medium)
             }
         }
+        // Live wallpaper: a looping video over the still frame (only while Glass is on screen).
+        val video = backdrop.video
+        if (video != null && backdrop.playing) VideoWallpaper(video, Modifier.fillMaxSize())
         backdrop.frosted?.let {
             Image(
                 it, null, Modifier.fillMaxSize().graphicsLayer { alpha = blur },

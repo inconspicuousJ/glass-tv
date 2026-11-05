@@ -37,6 +37,7 @@ jobs:
         run: |
           python3 -m pip install --quiet pillow
           python3 scripts/fetch_photos.py
+          python3 scripts/check_videos.py
 
       - uses: actions/upload-artifact@v4
         with:

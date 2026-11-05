@@ -24,6 +24,7 @@ import com.fares.glass.data.AppEntry
 import com.fares.glass.data.AppRepository
 import com.fares.glass.gfx.Blur
 import com.fares.glass.gfx.Wallpapers
+import com.fares.glass.gfx.LiveWallpapers
 import com.fares.glass.ui.Backdrop
 import com.fares.glass.ui.Command
 import com.fares.glass.ui.HomeScreen
@@ -116,8 +117,38 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
     }
 
+    override fun onStart() {
+        super.onStart()
+        backdrop.playing = true
+    }
+
+    override fun onStop() {
+        backdrop.playing = false
+        super.onStop()
+    }
+
     private fun loadWallpaper() {
         val index = repo.wallpaperIndex % Wallpapers.count(this)
+        Wallpapers.videoIndex(this, index)?.let { live ->
+            val name = Wallpapers.name(this, index)
+            wallpaperName.value = "$name (loading…)"
+            lifecycleScope.launch {
+                val ready = withContext(Dispatchers.IO) { LiveWallpapers.prepare(this@MainActivity, live) }
+                if (ready == null) {
+                    wallpaperName.value = "$name (needs internet)"
+                    return@launch
+                }
+                val (file, still) = ready
+                val frosted = withContext(Dispatchers.Default) { Blur.frosted(still, 480, 10f, 1.45f, 1.0f) }
+                wallpaper.value = still.asImageBitmap()
+                backdrop.frosted = frosted.asImageBitmap()
+                backdrop.foreground = null
+                backdrop.video = file.path
+                wallpaperName.value = name
+            }
+            return
+        }
+        backdrop.video = null
         lifecycleScope.launch {
             val (sharp, frosted) = withContext(Dispatchers.Default) {
                 val src = Wallpapers.load(this@MainActivity, index)

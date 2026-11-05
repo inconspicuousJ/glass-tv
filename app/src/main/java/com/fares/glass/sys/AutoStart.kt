@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import com.fares.glass.MainActivity
 
@@ -17,7 +18,7 @@ import com.fares.glass.MainActivity
  */
 object AutoStart {
     /** Amazon's home screen draws itself first on boot/wake; open Glass just after it. */
-    private const val DELAY_MS = 2500L
+    private const val DELAY_MS = 1200L
 
     fun openGlass(context: Context, delay: Long = DELAY_MS) {
         val app = context.applicationContext
@@ -54,5 +55,36 @@ class GlassApp : Application() {
                 if (intent.action == Intent.ACTION_SCREEN_ON) AutoStart.openGlass(context)
             }
         }, IntentFilter(Intent.ACTION_SCREEN_ON))
+        watchAmazonHome()
+    }
+
+    /**
+     * The instant path: reads the system log (needs READ_LOGS, granted once over ADB) and the moment
+     * Amazon's home screen is brought up - on boot, on wake, or by anything else - opens Glass over it.
+     * Without the permission logcat only shows Glass's own lines, so this simply never fires.
+     */
+    private fun watchAmazonHome() {
+        Thread {
+            var last = 0L
+            while (true) {
+                try {
+                    val p = Runtime.getRuntime().exec(arrayOf("logcat", "-T", "1", "-b", "events", "-b", "main", "-v", "brief"))
+                    p.inputStream.bufferedReader().forEachLine { line ->
+                        if (line.contains("com.amazon.tv.launcher") && line.contains("HomeActivity") &&
+                            (line.contains("am_") || line.contains("START u0") || line.contains("Displayed"))
+                        ) {
+                            val now = SystemClock.uptimeMillis()
+                            if (now - last > 1500) {
+                                last = now
+                                AutoStart.openGlass(this, 0L)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.w("Glass", "log watch stopped", e)
+                }
+                try { Thread.sleep(5000) } catch (_: InterruptedException) { return@Thread }
+            }
+        }.apply { isDaemon = true; name = "glass-home-watch" }.start()
     }
 }

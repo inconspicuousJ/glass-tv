@@ -35,6 +35,10 @@ class Backdrop {
     var screen by mutableStateOf(IntSize.Zero)
     /** Cut-out of the wallpaper's front mountains, drawn over the clock for a depth effect. */
     var foreground by mutableStateOf<ImageBitmap?>(null)
+    /** File of the live (video) wallpaper, when one is chosen. */
+    var video by mutableStateOf<String?>(null)
+    /** False while Glass is in the background, so the video player is released. */
+    var playing by mutableStateOf(true)
 }
 
 /**

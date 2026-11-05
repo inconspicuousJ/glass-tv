@@ -71,10 +71,19 @@ object Wallpapers {
         context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
             customFile.canRead()
 
-    fun count(context: Context) = all(context).size + presets.size + if (hasCustom(context)) 1 else 0
+    fun count(context: Context) = all(context).size + LiveWallpapers.all(context).size + presets.size + if (hasCustom(context)) 1 else 0
+
+    /** Index into the live (video) wallpapers, which come right after the stills; null for a still. */
+    fun videoIndex(context: Context, index: Int): Int? {
+        val i = index - all(context).size
+        return if (i >= 0 && i < LiveWallpapers.all(context).size) i else null
+    }
 
     fun name(context: Context, index: Int): String {
+        videoIndex(context, index)?.let { return "Live · " + LiveWallpapers.all(context)[it].first }
         val list = all(context)
+        val live = LiveWallpapers.all(context).size
+        val index = if (index >= list.size) index - live else index
         return when {
             index < list.size -> list[index].first
             index >= list.size + presets.size && hasCustom(context) -> context.getString(R.string.wallpaper_photo)
@@ -89,8 +98,11 @@ object Wallpapers {
         return runCatching { context.assets.open(path).use { BitmapFactory.decodeStream(it) } }.getOrNull()
     }
 
-    fun load(context: Context, index: Int): Bitmap {
+    fun load(context: Context, index0: Int): Bitmap {
         val list = all(context)
+        val live = LiveWallpapers.all(context).size
+        // Live wallpapers sit between the stills and the generated presets; they're loaded elsewhere.
+        val index = if (index0 >= list.size) (index0 - live).coerceAtLeast(list.size) else index0
         if (index < list.size) {
             runCatching { context.assets.open(list[index].second).use { BitmapFactory.decodeStream(it) } }
                 .getOrNull()?.let { return it }
