@@ -23,8 +23,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
-
+      # The runner image already ships the Android SDK (ANDROID_HOME); AGP fetches what it needs.
       - uses: gradle/actions/setup-gradle@v4
 
       # Without the KEYSTORE_* secrets, builds use a debug key; caching it keeps the signature
