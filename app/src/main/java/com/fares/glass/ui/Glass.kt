@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.addOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
@@ -89,6 +90,7 @@ fun Glass(
                     radius = maxOf(size.width, size.height) * 0.75f,
                 )
                 val rimWidth = 1.4.dp.toPx()
+                val bevel = 2.dp.toPx()
                 onDrawBehind {
                     clipPath(path) {
                         (source ?: backdrop.frosted)?.let { img ->
@@ -104,6 +106,9 @@ fun Glass(
                         drawRect(specular)
                         drawRect(caustic)
                         drawPath(innerPath, innerRim, style = Stroke(0.9.dp.toPx()))
+                        // Bevel: a bright inner top edge and a soft inner shadow at the bottom.
+                        translate(0f, bevel) { drawPath(path, Color.White.copy(alpha = 0.18f), style = Stroke(bevel * 1.4f)) }
+                        translate(0f, -bevel) { drawPath(path, Color.Black.copy(alpha = 0.14f), style = Stroke(bevel * 1.6f)) }
                     }
                     drawPath(path, rim, style = Stroke(rimWidth))
                 }

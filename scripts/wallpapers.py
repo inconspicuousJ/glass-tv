@@ -97,11 +97,11 @@ def render(name, P, seed, fg_layer):
     v=1-0.42*(((xx/W-0.5)**2)*1.2+((yy/H-0.42)**2)*1.6)
     img=img*np.clip(v,0.5,1)[...,None]+rng.normal(0,1.8,img.shape)
     out8=np.clip(img,0,255).astype(np.uint8)
-    Image.fromarray(out8).save(name+'.jpg',quality=88,optimize=True)
+    Image.fromarray(out8).save(name+'.jpg',quality=95,optimize=True,subsampling=0)
     r=ridges[fg_layer]
     m=Image.fromarray(((yy>=r[None,:]-0.5)*255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2))
     rgba=Image.fromarray(out8).convert('RGBA'); rgba.putalpha(m)
-    rgba.resize((1280,720),Image.LANCZOS).save(name+'_fg.webp','WEBP',quality=84,method=6)
+    rgba.save(name+'_fg.webp','WEBP',quality=92,method=6)
     print(name,'front ridge: top',int(r.min()),'centre min',int(r[700:1220].min()))
 
 PRESETS={

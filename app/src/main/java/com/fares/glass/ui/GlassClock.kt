@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -44,7 +46,7 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
     val face = remember {
         runCatching { Typeface.createFromAsset(context.assets, "fonts/Clock-Bold.ttf") }.getOrDefault(Typeface.DEFAULT_BOLD)
     }
-    val stretch = 1.65f
+    val stretch = 1.9f
     val glyphs = remember(time, density.density) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = face
@@ -91,7 +93,12 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
                     maskFilter = BlurMaskFilter(16.dp.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
                 val drop = 7.dp.toPx()
-                val rimWidth = 1.8.dp.toPx()
+                val rimWidth = 1.6.dp.toPx()
+                val bevel = 2.4.dp.toPx()
+                val fringe = 0.9.dp.toPx()
+                val centre = Offset(size.width / 2, size.height / 2)
+                val bevelLight = Color.White.copy(alpha = 0.55f)
+                val bevelShade = Color(0xFF07130F).copy(alpha = 0.30f)
                 onDrawBehind {
                     drawIntoCanvas { c ->
                         c.nativeCanvas.save()
@@ -108,9 +115,27 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
                                 filterQuality = FilterQuality.Low,
                             )
                         }
+                        // Lens: a slightly magnified copy of what's behind, as thick glass bends light.
+                        backdrop.frosted?.let { img ->
+                            withTransform({ scale(1.07f, 1.07f, centre) }) {
+                                drawImage(
+                                    img,
+                                    dstOffset = IntOffset(-origin.x.roundToInt(), -origin.y.roundToInt()),
+                                    dstSize = backdrop.screen,
+                                    alpha = 0.45f,
+                                    filterQuality = FilterQuality.Low,
+                                )
+                            }
+                        }
                         drawRect(body)
                         drawRect(specular)
+                        // Bevel: light catching the inner top edges, shadow along the inner bottom.
+                        translate(0f, bevel) { drawPath(path, bevelLight, style = Stroke(bevel * 1.3f)) }
+                        translate(0f, -bevel) { drawPath(path, bevelShade, style = Stroke(bevel * 1.6f)) }
                     }
+                    // Faint colour fringes, like light splitting at a glass edge.
+                    translate(-fringe, 0f) { drawPath(path, Color(0xFF8FE3FF).copy(alpha = 0.22f), style = Stroke(rimWidth)) }
+                    translate(fringe, 0f) { drawPath(path, Color(0xFFFFA8D8).copy(alpha = 0.18f), style = Stroke(rimWidth)) }
                     drawPath(path, rim, style = Stroke(rimWidth))
                 }
             },
