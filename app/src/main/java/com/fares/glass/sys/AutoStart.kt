@@ -27,7 +27,7 @@ object AutoStart {
     @Volatile var armedUntil = 0L
         private set
 
-    fun arm(ms: Long = 20_000L) { armedUntil = SystemClock.uptimeMillis() + ms }
+    fun arm(ms: Long = 60_000L) { armedUntil = SystemClock.uptimeMillis() + ms }
     fun disarm() { armedUntil = 0L }
 
     fun openGlass(context: Context, delay: Long = DELAY_MS) {
@@ -68,6 +68,7 @@ class GlassApp : Application() {
         // A fresh process right after boot: allow the takeover briefly.
         if (SystemClock.elapsedRealtime() < 3 * 60_000L) AutoStart.arm()
         watchAmazonHome()
+        KeeperService.start(this)
     }
 
     /**
@@ -101,5 +102,45 @@ class GlassApp : Application() {
                 try { Thread.sleep(5000) } catch (_: InterruptedException) { return@Thread }
             }
         }.apply { isDaemon = true; name = "glass-home-watch" }.start()
+    }
+}
+
+/**
+ * Keeps Glass's process alive while the Fire TV sleeps, so the wake-up listener and the log watcher
+ * are still running when the TV comes back on. A foreground service is the supported way to do this;
+ * its notification is set to the lowest priority (Fire TV doesn't show it on screen).
+ */
+class KeeperService : android.app.Service() {
+    override fun onCreate() {
+        super.onCreate()
+        val nm = getSystemService(android.app.NotificationManager::class.java)
+        val builder = if (android.os.Build.VERSION.SDK_INT >= 26) {
+            nm.createNotificationChannel(
+                android.app.NotificationChannel("glass", "Glass", android.app.NotificationManager.IMPORTANCE_MIN),
+            )
+            android.app.Notification.Builder(this, "glass")
+        } else {
+            @Suppress("DEPRECATION") android.app.Notification.Builder(this)
+        }
+        val n = builder.setSmallIcon(com.fares.glass.R.drawable.ic_launcher)
+            .setContentTitle("Glass")
+            .setContentText("Ready for when the TV turns on")
+            .setOngoing(true)
+            .build()
+        startForeground(1, n)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = START_STICKY
+    override fun onBind(intent: Intent?): android.os.IBinder? = null
+
+    companion object {
+        fun start(context: Context) {
+            val i = Intent(context, KeeperService::class.java)
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= 26) context.startForegroundService(i) else context.startService(i)
+            } catch (e: Exception) {
+                Log.w("Glass", "Keeper not started", e)
+            }
+        }
     }
 }
