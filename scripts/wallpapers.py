@@ -39,6 +39,18 @@ def render(name, P, seed, fg_layer):
     if P.get('clouds',0)>0:
         c=fbm(seed+5,520,5); c=np.clip((c-0.55)*2.2,0,1)*np.clip(1-yy/(H*0.55),0,1)
         sky=sky+(col(P['cloudc'])-sky)*(c*P['clouds'])[...,None]
+    if P.get('aurora'):
+        ac=col(P['aurorac']); a=np.zeros((H,W),np.float32)
+        xs=np.arange(W,dtype=np.float32)/W
+        for j,(yb,amp_,fr,ph,th) in enumerate(P['aurora']):
+            curve=(yb+amp_*np.sin(xs*fr*6.283+ph)+amp_*0.4*np.sin(xs*fr*2.3*6.283+ph*1.7))*H
+            streak=0.55+0.45*np.asarray(Image.fromarray((fbm(seed+40+j,26,3,0.6,W,8)*255).astype(np.uint8)).resize((W,1)),np.float32)[0]/255
+            below=np.exp(-np.clip(yy-curve[None,:],0,None)/(H*0.006))
+            above=np.exp(-np.clip(curve[None,:]-yy,0,None)/(H*th))
+            a+=below*above*streak[None,:]
+        a=np.clip(a,0,1)*P.get('auroras',0.7)
+        sky=sky+(ac-sky)*a[...,None]
+        sky=sky+(col(P['aurorac2'])-sky)*(a*np.clip((yy/H-0.05)*-4+0.6,0,1)*0.5)[...,None]
     img=sky.copy()
     if P.get('stars',0):
         n=P['stars']; sx=rng.integers(0,W,n); sy=(rng.random(n)**1.8*H*0.5).astype(int); b=rng.uniform(30,190,n)
@@ -127,7 +139,30 @@ PRESETS={
            dict(c='#33423c',base=0.62,amp=0.16,snow=0.3,haze=0.35,rim=0.25,mist=0.5,detail=80,peaks=1.2,centre=0.25),
            dict(c='#1c2622',base=0.78,amp=0.16,haze=0.15,mist=0.4,detail=80),
            dict(c='#0b100e',base=0.94,amp=0.10,detail=80)]),
+
+ 'aurora':dict(sky0='#02060a',sky1='#0d2a2b',glowc='#7fe0c0',glow=(0.5,0.45,0.35,0.35),cloudc='#1d3b3a',clouds=0.0,
+   stars=700,light=(-0.5,-0.8,0.5),snowc='#e6fff6',mistc='#6fbfa6',water=0.70,
+   aurora=[(0.34,0.05,0.8,0.4,0.07),(0.26,0.04,1.3,2.0,0.05),(0.40,0.03,0.5,4.1,0.04)],aurorac='#3fe0a0',aurorac2='#8a64ff',auroras=0.42,
+   layers=[dict(c='#30484a',base=0.48,amp=0.16,snow=0.8,haze=0.35,rim=0.6,peaks=1.4),
+           dict(c='#15252a',base=0.66,amp=0.18,snow=0.4,haze=0.1,rim=0.5,peaks=1.2,centre=0.20),
+           dict(c='#071012',base=0.705,amp=0.04)]),
+ 'alpine':dict(sky0='#2a3a68',sky1='#f2b9a5',glowc='#ffd8b0',glow=(0.62,0.62,0.40,0.6),cloudc='#f0c0b8',clouds=0.35,
+   stars=0,light=(0.7,-0.6,0.5),snowc='#fff4ee',mistc='#d9b8c8',
+   layers=[dict(c='#8a8fb8',base=0.42,amp=0.24,snow=1.0,haze=0.35,rim=0.7,peaks=1.5),
+           dict(c='#4f5785',base=0.62,amp=0.22,snow=0.6,haze=0.15,rim=0.5,mist=0.25,peaks=1.3,centre=0.17),
+           dict(c='#262a48',base=0.82,amp=0.14,haze=0.05,mist=0.15),
+           dict(c='#11132a',base=0.95,amp=0.08)]),
+ 'glacier':dict(sky0='#06141f',sky1='#3f7f99',glowc='#c8f2ff',glow=(0.40,0.38,0.36,0.6),cloudc='#4d8aa3',clouds=0.25,
+   stars=200,light=(-0.6,-0.7,0.5),snowc='#f2fbff',mistc='#9fd3e6',water=0.68,
+   layers=[dict(c='#5f8fa6',base=0.44,amp=0.22,snow=1.1,haze=0.35,rim=0.6,peaks=1.5),
+           dict(c='#2f5466',base=0.63,amp=0.20,snow=0.7,haze=0.1,rim=0.5,peaks=1.3,centre=0.17),
+           dict(c='#0d1d26',base=0.685,amp=0.04)]),
+ 'fjord':dict(sky0='#0a0f1c',sky1='#4a5878',glowc='#e8d3b0',glow=(0.72,0.50,0.30,0.55),cloudc='#59647e',clouds=0.4,
+   stars=0,light=(0.6,-0.7,0.5),snowc='#f4f1ea',mistc='#a7b0c4',water=0.72,
+   layers=[dict(c='#4e5873',base=0.50,amp=0.30,snow=0.5,haze=0.3,rim=0.5,rough=0.6,peaks=1.6),
+           dict(c='#2a3248',base=0.70,amp=0.34,snow=0.3,haze=0.1,rim=0.4,rough=0.6,peaks=1.4,centre=0.06),
+           dict(c='#10141f',base=0.73,amp=0.03)]),
 }
-SEEDS={'lake':3,'ridge':8,'dusk':11,'mist':19}
-FG={'lake':1,'ridge':1,'dusk':1,'mist':1}
+SEEDS={'lake':3,'ridge':8,'dusk':11,'mist':19,'aurora':23,'alpine':29,'glacier':31,'fjord':37}
+FG={'lake':1,'ridge':1,'dusk':1,'mist':1,'aurora':1,'alpine':1,'glacier':1,'fjord':1}
 for n in (sys.argv[1:] or PRESETS): render(n,PRESETS[n],SEEDS[n],FG[n])

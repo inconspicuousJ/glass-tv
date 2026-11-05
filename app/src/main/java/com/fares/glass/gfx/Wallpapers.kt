@@ -48,6 +48,10 @@ object Wallpapers {
         "Ridge" to "wallpapers/ridge.jpg",
         "Dusk" to "wallpapers/dusk.jpg",
         "Mist" to "wallpapers/mist.jpg",
+        "Aurora" to "wallpapers/aurora.jpg",
+        "Alpine Dawn" to "wallpapers/alpine.jpg",
+        "Glacier" to "wallpapers/glacier.jpg",
+        "Fjord" to "wallpapers/fjord.jpg",
     )
 
     private val customFile get() = File(Environment.getExternalStorageDirectory(), "Glass/wallpaper.jpg")

@@ -74,30 +74,35 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
             .onGloballyPositioned { origin = it.positionInRoot() }
             .drawWithCache {
                 val rim = Brush.linearGradient(
-                    0f to Color.White,
-                    0.35f to Color.White.copy(alpha = 0.85f),
-                    0.7f to Color(0xFFE4F3EE).copy(alpha = 0.70f),
-                    1f to Color.White.copy(alpha = 0.95f),
+                    0f to Color.White.copy(alpha = 0.98f),
+                    0.35f to Color.White.copy(alpha = 0.45f),
+                    0.7f to Color.White.copy(alpha = 0.28f),
+                    1f to Color.White.copy(alpha = 0.80f),
                     start = Offset.Zero, end = Offset(size.width, size.height),
                 )
-                // Frosted, pale mint glass (as in the reference): mostly solid, a little of the
-                // background colour showing through, a glossy band near the top.
+                // Crystal glass: mostly clear, so the (blurred) scene shows through; light lives on the
+                // edges - a bright outer rim, a soft glow just inside the edge - plus a gloss at the top.
                 val body = Brush.verticalGradient(
-                    0f to Color(0xFFF2FAF7).copy(alpha = 0.86f),
-                    0.45f to Color(0xFFD9EDE7).copy(alpha = 0.78f),
-                    1f to Color(0xFFB9D7CE).copy(alpha = 0.80f),
+                    0f to Color.White.copy(alpha = 0.10f),
+                    0.5f to Color.White.copy(alpha = 0.04f),
+                    1f to Color.White.copy(alpha = 0.08f),
                 )
                 val specular = Brush.verticalGradient(
+                    0f to Color.White.copy(alpha = 0.30f),
+                    0.18f to Color.White.copy(alpha = 0.08f),
+                    0.32f to Color.Transparent,
+                )
+                val innerGlow = Brush.verticalGradient(
                     0f to Color.White.copy(alpha = 0.55f),
-                    0.22f to Color.White.copy(alpha = 0.12f),
-                    0.4f to Color.Transparent,
+                    0.5f to Color.White.copy(alpha = 0.16f),
+                    1f to Color.White.copy(alpha = 0.40f),
                 )
                 val shadow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.argb(110, 0, 0, 0)
+                    color = android.graphics.Color.argb(70, 0, 0, 0)
                     maskFilter = BlurMaskFilter(16.dp.toPx(), BlurMaskFilter.Blur.NORMAL)
                 }
                 val drop = 7.dp.toPx()
-                val rimWidth = 2.6.dp.toPx()
+                val rimWidth = 1.7.dp.toPx()
                 val bevel = 2.4.dp.toPx()
                 val fringe = 0.9.dp.toPx()
                 val centre = Offset(size.width / 2, size.height / 2)
@@ -126,20 +131,19 @@ fun GlassClock(time: String, backdrop: Backdrop, modifier: Modifier = Modifier) 
                                     img,
                                     dstOffset = IntOffset(-origin.x.roundToInt(), -origin.y.roundToInt()),
                                     dstSize = backdrop.screen,
-                                    alpha = 0.30f,
+                                    alpha = 0.35f,
                                     filterQuality = FilterQuality.Low,
                                 )
                             }
                         }
                         drawRect(body)
                         drawRect(specular)
-                        // Bevel: light catching the inner top edges, shadow along the inner bottom.
-                        translate(0f, bevel) { drawPath(path, bevelLight, style = Stroke(bevel * 1.3f)) }
-                        translate(0f, -bevel) { drawPath(path, bevelShade, style = Stroke(bevel * 1.6f)) }
+                        // Glow just inside the edge (a wide stroke, clipped to the glyph): reads as thickness.
+                        drawPath(path, innerGlow, style = Stroke(bevel * 2.2f))
                     }
                     // Faint colour fringes, like light splitting at a glass edge.
-                    translate(-fringe, 0f) { drawPath(path, Color(0xFF8FE3FF).copy(alpha = 0.22f), style = Stroke(rimWidth)) }
-                    translate(fringe, 0f) { drawPath(path, Color(0xFFFFA8D8).copy(alpha = 0.18f), style = Stroke(rimWidth)) }
+                    translate(-fringe, 0f) { drawPath(path, Color(0xFF8FE3FF).copy(alpha = 0.14f), style = Stroke(rimWidth)) }
+                    translate(fringe, 0f) { drawPath(path, Color(0xFFFFA8D8).copy(alpha = 0.10f), style = Stroke(rimWidth)) }
                     drawPath(path, rim, style = Stroke(rimWidth))
                 }
             },
