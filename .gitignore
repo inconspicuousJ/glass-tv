@@ -27,3 +27,7 @@ tv-debloat/
 GlassLauncher/
 venv/
 adbkey*
+
+# Fetched at build time
+app/src/main/assets/photos/
+photo-sheet.jpg

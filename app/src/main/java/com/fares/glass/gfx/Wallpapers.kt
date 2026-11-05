@@ -42,7 +42,18 @@ object Wallpapers {
             intArrayOf(0xFFFFFFFF.toInt(), 0xFFAFC4E8.toInt(), 0xFFFFFFFF.toInt())),
     )
 
-    /** Calm, dark landscapes bundled as assets (original renders, no third-party photos). */
+    /** Real scenery photos fetched at build time (scripts/fetch_photos.py), from assets/photos/index.json. */
+    @Volatile private var scenery: List<Pair<String, String>>? = null
+
+    private fun scenery(context: Context): List<Pair<String, String>> = scenery ?: runCatching {
+        val arr = org.json.JSONArray(context.assets.open("photos/index.json").bufferedReader().use { it.readText() })
+        List(arr.length()) { i -> arr.getJSONObject(i).let { it.getString("name") to it.getString("file") } }
+    }.getOrDefault(emptyList()).also { scenery = it }
+
+    /** The landscape renders (with a depth cut-out) followed by the real photos. */
+    private fun all(context: Context) = photos + scenery(context)
+
+    /** Calm, dark landscapes bundled as assets (original renders). */
     private val photos = listOf(
         "Lake" to "wallpapers/lake.jpg",
         "Ridge" to "wallpapers/ridge.jpg",
@@ -60,12 +71,15 @@ object Wallpapers {
         context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
             customFile.canRead()
 
-    fun count(context: Context) = photos.size + presets.size + if (hasCustom(context)) 1 else 0
+    fun count(context: Context) = all(context).size + presets.size + if (hasCustom(context)) 1 else 0
 
-    fun name(context: Context, index: Int): String = when {
-        index < photos.size -> photos[index].first
-        index >= photos.size + presets.size && hasCustom(context) -> context.getString(R.string.wallpaper_photo)
-        else -> context.getString(presets[(index - photos.size) % presets.size].name)
+    fun name(context: Context, index: Int): String {
+        val list = all(context)
+        return when {
+            index < list.size -> list[index].first
+            index >= list.size + presets.size && hasCustom(context) -> context.getString(R.string.wallpaper_photo)
+            else -> context.getString(presets[(index - list.size) % presets.size].name)
+        }
     }
 
     /** Front-mountain cut-out for the bundled landscapes (null for the others). */
@@ -76,11 +90,12 @@ object Wallpapers {
     }
 
     fun load(context: Context, index: Int): Bitmap {
-        if (index < photos.size) {
-            runCatching { context.assets.open(photos[index].second).use { BitmapFactory.decodeStream(it) } }
+        val list = all(context)
+        if (index < list.size) {
+            runCatching { context.assets.open(list[index].second).use { BitmapFactory.decodeStream(it) } }
                 .getOrNull()?.let { return it }
         }
-        if (index >= photos.size + presets.size && hasCustom(context)) {
+        if (index >= list.size + presets.size && hasCustom(context)) {
             val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(customFile.path, opts)
             var sample = 1
@@ -88,7 +103,7 @@ object Wallpapers {
             BitmapFactory.decodeFile(customFile.path, BitmapFactory.Options().apply { inSampleSize = sample })
                 ?.let { return it }
         }
-        val p = ((index - photos.size) % presets.size + presets.size) % presets.size
+        val p = ((index - list.size) % presets.size + presets.size) % presets.size
         return render(presets[p], index)
     }
 
