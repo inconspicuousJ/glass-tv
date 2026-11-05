@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Accueil -->
+    <string name="greeting_morning">Bonjour</string>
+    <string name="greeting_afternoon">Bonjour</string>
+    <string name="greeting_evening">Bonsoir</string>
+    <string name="greeting_morning_name">Bonjour %s</string>
+    <string name="greeting_afternoon_name">Bonjour %s</string>
+    <string name="greeting_evening_name">Bonsoir %s</string>
+    <string name="top_settings">Réglages</string>
+    <string name="menu_move">Déplacer</string>
+    <string name="menu_hide">Masquer</string>
+    <string name="menu_info">Infos sur l’app</string>
+    <string name="hint_move">Déplacez « %s » avec les flèches · OK pour terminer</string>
+
+    <!-- Centre de contrôle : modules -->
+    <string name="cc_off">Désactivé</string>
+    <string name="cc_not_connected">Non connecté</string>
+    <string name="cc_unavailable">Indisponible</string>
+    <string name="cc_no_devices">Aucun appareil</string>
+    <plurals name="cc_connected_count">
+        <item quantity="one">%d connecté</item>
+        <item quantity="many">%d connectés</item>
+        <item quantity="other">%d connectés</item>
+    </plurals>
+    <string name="cc_animations">Animations</string>
+    <string name="cc_anim_adb">Activer via ADB</string>
+    <string name="cc_anim_normal">Normales</string>
+    <string name="cc_anim_off">Coupées</string>
+    <string name="cc_anim_fast">Rapides ×%.1f</string>
+    <string name="cc_wallpaper">Fond d’écran</string>
+    <string name="cc_top_shelf_app">Couleurs de l’app</string>
+    <string name="cc_hidden_apps">Apps masquées</string>
+    <string name="cc_hidden_none">Aucune</string>
+    <string name="cc_hidden_count">%d · OK pour réafficher</string>
+    <string name="cc_system">Système</string>
+    <string name="cc_memory">Mémoire</string>
+    <string name="cc_storage">Stockage</string>
+
+    <!-- Centre de contrôle : Wi-Fi -->
+    <string name="wifi_networks">Réseaux</string>
+    <string name="wifi_searching">Recherche des réseaux…</string>
+    <string name="wifi_none_found">Aucun réseau trouvé</string>
+    <string name="wifi_rescan">Rechercher à nouveau</string>
+    <string name="wifi_system_settings">Réglages réseau du système</string>
+    <string name="wifi_connected">Connecté</string>
+    <string name="wifi_connected_ip">Connecté · %s</string>
+    <string name="wifi_saved">Enregistré</string>
+    <string name="wifi_password">Mot de passe</string>
+    <string name="wifi_password_for">pour « %s »</string>
+    <string name="wifi_password_hint">Validez sur le clavier pour vous connecter · Retour pour annuler</string>
+    <string name="wifi_connecting">Connexion à %s…</string>
+    <string name="wifi_scan_no_location">Recherche impossible : permission de localisation manquante</string>
+    <string name="wifi_location_off">Activez la localisation dans les réglages pour voir les réseaux</string>
+    <string name="wifi_save_failed">Impossible d’enregistrer ce réseau</string>
+    <string name="wifi_connect_failed">Échec de la connexion à %s</string>
+
+    <!-- Centre de contrôle : Bluetooth -->
+    <string name="bt_my_devices">Mes appareils</string>
+    <string name="bt_other_devices">Autres appareils</string>
+    <string name="bt_none_paired">Aucun appareil jumelé</string>
+    <string name="bt_connected_kind">Connecté · %s</string>
+    <string name="bt_not_connected_kind">Non connecté · %s</string>
+    <string name="bt_ok_to_pair">OK pour jumeler · %s</string>
+    <string name="bt_searching">Recherche en cours…</string>
+    <string name="bt_search">Rechercher des appareils</string>
+    <string name="bt_system_settings">Appareils dans les réglages du système</string>
+    <string name="bt_protected">La télécommande et les manettes se gèrent dans les réglages du système</string>
+    <string name="bt_forget_confirm">OK à nouveau pour oublier %s</string>
+    <string name="bt_pairing">Jumelage avec %s…</string>
+    <string name="bt_paired">%s jumelé</string>
+    <string name="bt_pair_failed">Échec du jumelage avec %s</string>
+    <string name="bt_forgotten">%s oublié</string>
+    <string name="bt_forget_failed">Impossible d’oublier %s</string>
+    <string name="bt_discovering">Recherche d’appareils…</string>
+    <string name="bt_discover_failed">Recherche impossible (localisation ?)</string>
+    <string name="bt_permission_missing">Permission Bluetooth manquante</string>
+    <string name="bt_the_device">l’appareil</string>
+    <string name="bt_device">Appareil</string>
+    <string name="bt_kind_audio">Audio</string>
+    <string name="bt_kind_remote">Télécommande</string>
+    <string name="bt_kind_gamepad">Manette / clavier</string>
+    <string name="bt_kind_phone">Téléphone</string>
+    <string name="bt_kind_computer">Ordinateur</string>
+
+    <!-- Raccourcis de réglages -->
+    <string name="section_display">Affichage et sons</string>
+    <string name="section_devices">Appareils</string>
+    <string name="section_apps">Applications</string>
+    <string name="section_accessibility">Accessibilité</string>
+    <string name="section_about">À propos</string>
+    <string name="section_network">Réseau</string>
+    <string name="section_all">Tous les réglages</string>
+
+    <!-- Infos système -->
+    <string name="usage_free_of">%1$s libres sur %2$s</string>
+    <string name="usage_free">%s libres</string>
+    <string name="size_mb">%d Mo</string>
+    <string name="size_gb">%.1f Go</string>
+
+    <!-- Fonds d'écran -->
+    <string name="wallpaper_liquid">Liquide</string>
+    <string name="wallpaper_aurora">Aurore</string>
+    <string name="wallpaper_dusk">Crépuscule</string>
+    <string name="wallpaper_graphite">Graphite</string>
+    <string name="wallpaper_photo">Photo</string>
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home -->
+    <string name="greeting_morning">Guten Morgen</string>
+    <string name="greeting_afternoon">Guten Tag</string>
+    <string name="greeting_evening">Guten Abend</string>
+    <string name="greeting_morning_name">Guten Morgen, %s</string>
+    <string name="greeting_afternoon_name">Guten Tag, %s</string>
+    <string name="greeting_evening_name">Guten Abend, %s</string>
+    <string name="top_settings">Einstellungen</string>
+    <string name="menu_move">Verschieben</string>
+    <string name="menu_hide">Ausblenden</string>
+    <string name="menu_info">App-Info</string>
+    <string name="hint_move">„%s“ mit den Pfeiltasten verschieben · OK zum Beenden</string>
+
+    <!-- Control Center: modules -->
+    <string name="cc_off">Aus</string>
+    <string name="cc_not_connected">Nicht verbunden</string>
+    <string name="cc_unavailable">Nicht verfügbar</string>
+    <string name="cc_no_devices">Keine Geräte</string>
+    <plurals name="cc_connected_count">
+        <item quantity="one">%d verbunden</item>
+        <item quantity="other">%d verbunden</item>
+    </plurals>
+    <string name="cc_animations">Animationen</string>
+    <string name="cc_anim_adb">Per ADB aktivieren</string>
+    <string name="cc_anim_normal">Normal</string>
+    <string name="cc_anim_off">Aus</string>
+    <string name="cc_anim_fast">Schnell ×%.1f</string>
+    <string name="cc_wallpaper">Hintergrund</string>
+    <string name="cc_top_shelf_app">App-Farben</string>
+    <string name="cc_hidden_apps">Ausgeblendet</string>
+    <string name="cc_hidden_none">Keine</string>
+    <string name="cc_hidden_count">%d · OK zum Anzeigen</string>
+    <string name="cc_system">System</string>
+    <string name="cc_memory">RAM</string>
+    <string name="cc_storage">Speicher</string>
+
+    <!-- Control Center: Wi-Fi -->
+    <string name="wifi_networks">Netzwerke</string>
+    <string name="wifi_searching">Suche nach Netzwerken…</string>
+    <string name="wifi_none_found">Keine Netzwerke gefunden</string>
+    <string name="wifi_rescan">Erneut suchen</string>
+    <string name="wifi_system_settings">Netzwerkeinstellungen des Systems</string>
+    <string name="wifi_connected">Verbunden</string>
+    <string name="wifi_connected_ip">Verbunden · %s</string>
+    <string name="wifi_saved">Gespeichert</string>
+    <string name="wifi_password">Passwort</string>
+    <string name="wifi_password_for">für „%s“</string>
+    <string name="wifi_password_hint">Zum Verbinden auf der Tastatur bestätigen · Zurück zum Abbrechen</string>
+    <string name="wifi_connecting">Verbindung mit %s…</string>
+    <string name="wifi_scan_no_location">Suche nicht möglich: Standortberechtigung fehlt</string>
+    <string name="wifi_location_off">Standort in den Einstellungen aktivieren, um Netzwerke zu sehen</string>
+    <string name="wifi_save_failed">Netzwerk konnte nicht gespeichert werden</string>
+    <string name="wifi_connect_failed">Verbindung mit %s fehlgeschlagen</string>
+
+    <!-- Control Center: Bluetooth -->
+    <string name="bt_my_devices">Meine Geräte</string>
+    <string name="bt_other_devices">Andere Geräte</string>
+    <string name="bt_none_paired">Keine gekoppelten Geräte</string>
+    <string name="bt_connected_kind">Verbunden · %s</string>
+    <string name="bt_not_connected_kind">Nicht verbunden · %s</string>
+    <string name="bt_ok_to_pair">OK zum Koppeln · %s</string>
+    <string name="bt_searching">Suche…</string>
+    <string name="bt_search">Nach Geräten suchen</string>
+    <string name="bt_system_settings">Geräte in den Systemeinstellungen</string>
+    <string name="bt_protected">Fernbedienungen und Controller in den Systemeinstellungen verwalten</string>
+    <string name="bt_forget_confirm">Erneut OK drücken, um %s zu entfernen</string>
+    <string name="bt_pairing">Kopplung mit %s…</string>
+    <string name="bt_paired">%s gekoppelt</string>
+    <string name="bt_pair_failed">Kopplung mit %s fehlgeschlagen</string>
+    <string name="bt_forgotten">%s entfernt</string>
+    <string name="bt_forget_failed">%s konnte nicht entfernt werden</string>
+    <string name="bt_discovering">Suche nach Geräten…</string>
+    <string name="bt_discover_failed">Suche nicht möglich (Standort?)</string>
+    <string name="bt_permission_missing">Bluetooth-Berechtigung fehlt</string>
+    <string name="bt_the_device">das Gerät</string>
+    <string name="bt_device">Gerät</string>
+    <string name="bt_kind_audio">Audio</string>
+    <string name="bt_kind_remote">Fernbedienung</string>
+    <string name="bt_kind_gamepad">Controller / Tastatur</string>
+    <string name="bt_kind_phone">Telefon</string>
+    <string name="bt_kind_computer">Computer</string>
+
+    <!-- Settings shortcuts -->
+    <string name="section_display">Bild &amp; Ton</string>
+    <string name="section_devices">Geräte</string>
+    <string name="section_apps">Apps</string>
+    <string name="section_accessibility">Bedienungshilfen</string>
+    <string name="section_about">Info</string>
+    <string name="section_network">Netzwerk</string>
+    <string name="section_all">Alle Einstellungen</string>
+
+    <!-- System info -->
+    <string name="usage_free_of">%1$s von %2$s frei</string>
+    <string name="usage_free">%s frei</string>
+    <string name="size_mb">%d MB</string>
+    <string name="size_gb">%.1f GB</string>
+
+    <!-- Wallpapers -->
+    <string name="wallpaper_liquid">Flüssig</string>
+    <string name="wallpaper_aurora">Polarlicht</string>
+    <string name="wallpaper_dusk">Dämmerung</string>
+    <string name="wallpaper_graphite">Graphit</string>
+    <string name="wallpaper_photo">Foto</string>
+</resources>

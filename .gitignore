@@ -1,0 +1,29 @@
+# Gradle / Android Studio
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Build outputs
+*.apk
+*.aab
+
+# Signing keys
+*.jks
+*.keystore
+keystore.properties
+
+# macOS
+.DS_Store
+
+# Local working folders (never commit)
+tools/
+tv-debloat/
+GlassLauncher/
+venv/
+adbkey*
