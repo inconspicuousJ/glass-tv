@@ -164,6 +164,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun launch(entry: AppEntry, from: Rect) {
+        com.fares.glass.sys.AutoStart.disarm()
         val options = ActivityOptions.makeScaleUpAnimation(window.decorView, from.left, from.top, from.width(), from.height())
         try {
             startActivity(entry.launchIntent(), options.toBundle())
@@ -190,6 +191,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startSafely(intent: Intent) {
+        com.fares.glass.sys.AutoStart.disarm() // opening Settings on purpose: never pull back to Glass
         try {
             startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } catch (e: Exception) {
