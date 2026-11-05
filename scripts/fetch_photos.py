@@ -10,7 +10,10 @@ out_dir = os.path.join(root, '..', 'app', 'src', 'main', 'assets', 'photos')
 os.makedirs(out_dir, exist_ok=True)
 items, thumbs = [], []
 for i, p in enumerate(json.load(open(os.path.join(root, 'photos.json')))):
-    url = f"https://images.unsplash.com/photo-{p['id']}?w=2400&q=90&fm=jpg"
+    if 'slug' in p:  # an Unsplash page id (unsplash.com/photos/<id>): use its download link
+        url = f"https://unsplash.com/photos/{p['slug']}/download?force=true&w=2400"
+    else:
+        url = f"https://images.unsplash.com/photo-{p['id']}?w=2400&q=90&fm=jpg"
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'glass-tv-build'})
         data = urllib.request.urlopen(req, timeout=60).read()
