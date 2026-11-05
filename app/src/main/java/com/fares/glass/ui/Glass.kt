@@ -32,6 +32,8 @@ import kotlin.math.roundToInt
 class Backdrop {
     var frosted by mutableStateOf<ImageBitmap?>(null)
     var screen by mutableStateOf(IntSize.Zero)
+    /** Cut-out of the wallpaper's front mountains, drawn over the clock for a depth effect. */
+    var foreground by mutableStateOf<ImageBitmap?>(null)
 }
 
 /**

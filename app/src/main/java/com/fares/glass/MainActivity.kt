@@ -124,8 +124,10 @@ class MainActivity : ComponentActivity() {
                 // ~480 px wide with sigma 10: like a 40 px blur at 1080p, and very cheap.
                 src to Blur.frosted(src, 480, 10f, 1.45f, 1.0f)
             }
+            val front = withContext(Dispatchers.Default) { Wallpapers.foreground(this@MainActivity, index) }
             wallpaper.value = sharp.asImageBitmap()
             backdrop.frosted = frosted.asImageBitmap()
+            backdrop.foreground = front?.asImageBitmap()
             wallpaperName.value = Wallpapers.name(this@MainActivity, index)
         }
     }

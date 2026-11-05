@@ -275,6 +275,15 @@ fun HomeScreen(
                 )
             }
         }
+        // Depth effect: the landscape's front mountains sit over the bottom of the clock.
+        backdrop.foreground?.let { fg ->
+            if (headerAlpha > 0f && ambience == null) {
+                Image(
+                    fg, null, Modifier.fillMaxSize().graphicsLayer { alpha = headerAlpha * (1f - blur) },
+                    contentScale = ContentScale.Crop, filterQuality = FilterQuality.Low,
+                )
+            }
+        }
         if (dockAlpha > 0f) {
             Glass(
                 backdrop,

@@ -37,6 +37,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.text.style.LineHeightStyle
+import kotlin.math.roundToInt
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
@@ -164,19 +168,32 @@ fun HomeHeader(name: String, modifier: Modifier) {
     }
     @Suppress("UNUSED_VARIABLE") val greeting = if (name.isBlank()) stringResource(plain) else stringResource(named, name)
     val (time, date) = rememberClock(now)
-    // Centred, like tvOS: a quiet date line over a large rounded clock in frosted, slightly
-    // tinted white with a soft shadow and a glassy rim on the digits.
-    val clockStyle = TextStyle(fontFamily = Typo.clock, fontWeight = FontWeight.Bold, fontSize = 124.sp, letterSpacing = (-1.5).sp)
+    // Lock-screen style: a quiet date line over a tall, stretched rounded clock made of glass
+    // (translucent frosted fill, bright rim). The wallpaper's front mountains are drawn over it.
+    val stretch = 1.65f
+    val clockStyle = TextStyle(
+        fontFamily = Typo.clock, fontWeight = FontWeight.Bold, fontSize = 108.sp, letterSpacing = (-1).sp,
+        lineHeight = 108.sp, lineHeightStyle = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.Both),
+    )
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(date, style = txt(white.copy(alpha = 0.92f), 19.sp, FontWeight.SemiBold).copy(shadow = headerShadow, letterSpacing = 0.2.sp))
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            Modifier.layout { measurable, constraints ->
+                val p = measurable.measure(constraints)
+                layout(p.width, (p.height * stretch).roundToInt()) {
+                    p.placeWithLayer(0, 0) { scaleY = stretch; transformOrigin = TransformOrigin(0.5f, 0f) }
+                }
+            },
+            contentAlignment = Alignment.Center,
+        ) {
             BasicText(time, style = clockStyle.copy(
-                brush = Brush.verticalGradient(listOf(Color(0xFFF8FDFB), Color(0xFFE2F0EB), Color(0xFFBFD6CE))),
-                shadow = androidx.compose.ui.graphics.Shadow(Color.Black.copy(alpha = 0.38f), Offset(0f, 8f), 36f),
+                brush = Brush.verticalGradient(listOf(
+                    Color(0xFFF6FBF9).copy(alpha = 0.93f), Color(0xFFE0EEE9).copy(alpha = 0.80f), Color(0xFFC4DAD2).copy(alpha = 0.70f),
+                )),
             ))
             BasicText(time, style = clockStyle.copy(
-                brush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.95f), Color.White.copy(alpha = 0.15f), Color.White.copy(alpha = 0.45f))),
-                drawStyle = Stroke(width = 2.2f),
+                brush = Brush.verticalGradient(listOf(Color.White, Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.55f))),
+                drawStyle = Stroke(width = 1.8f),
             ))
         }
     }

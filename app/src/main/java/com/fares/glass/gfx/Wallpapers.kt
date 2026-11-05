@@ -64,6 +64,13 @@ object Wallpapers {
         else -> context.getString(presets[(index - photos.size) % presets.size].name)
     }
 
+    /** Front-mountain cut-out for the bundled landscapes (null for the others). */
+    fun foreground(context: Context, index: Int): Bitmap? {
+        if (index !in photos.indices) return null
+        val path = photos[index].second.replace(".jpg", "_fg.webp")
+        return runCatching { context.assets.open(path).use { BitmapFactory.decodeStream(it) } }.getOrNull()
+    }
+
     fun load(context: Context, index: Int): Bitmap {
         if (index < photos.size) {
             runCatching { context.assets.open(photos[index].second).use { BitmapFactory.decodeStream(it) } }
