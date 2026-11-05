@@ -62,6 +62,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // While Glass is on screen, keep the TV awake: no Amazon screensaver, no sleep.
+        // (Only applies while Glass is showing; apps and the TV's own power settings work as usual.)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         repo = AppRepository(this)
         Typo.load(this)
         intent.getStringExtra("name")?.let(repo::setName)

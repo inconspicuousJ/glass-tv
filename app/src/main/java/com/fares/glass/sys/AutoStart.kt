@@ -51,7 +51,7 @@ class BootReceiver : BroadcastReceiver() {
         when (intent.action) {
             Intent.ACTION_BOOT_COMPLETED, "android.intent.action.QUICKBOOT_POWERON",
             "com.htc.intent.action.QUICKBOOT_POWERON", Intent.ACTION_MY_PACKAGE_REPLACED,
-            -> { AutoStart.arm(); AutoStart.openGlass(context, 4000L) }
+            -> { AutoStart.arm(); AutoStart.openGlass(context, 1500L) }
         }
     }
 }
