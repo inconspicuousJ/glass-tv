@@ -35,7 +35,7 @@ for i, p in enumerate(json.load(open(os.path.join(root, 'photos.json')))):
     im = im.resize((1920, 1080), Image.LANCZOS)
     im = ImageEnhance.Brightness(im).enhance(0.9)
     fn = f"photo_{i:02d}.jpg"
-    im.save(os.path.join(out_dir, fn), quality=90, optimize=True, progressive=False)
+    im.save(os.path.join(out_dir, fn), quality=84, optimize=True, progressive=False)
     items.append({'name': p['name'], 'file': 'photos/' + fn})
     th = im.resize((384, 216)); ImageDraw.Draw(th).text((8, 6), f"{i:02d} {p['name']}", fill=(255, 255, 0))
     thumbs.append(th); print('ok', fn, p['name'])
